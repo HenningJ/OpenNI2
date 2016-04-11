@@ -33,10 +33,11 @@ XN_CRITICAL_SECTION_HANDLE XnDeviceEnumeration::ms_lock;
 
 XnDeviceEnumeration::XnUsbId XnDeviceEnumeration::ms_supportedProducts[] =
 {
-    { 0x1D27, 0x0500 },
-    { 0x1D27, 0x0600 },
-    { 0x1D27, 0x0601 },
-    { 0x1D27, 0x0609 },
+    // disable PrimeSense devices. They have their own driver
+    //{ 0x1D27, 0x0500 },
+    //{ 0x1D27, 0x0600 },
+    //{ 0x1D27, 0x0601 },
+    //{ 0x1D27, 0x0609 },
     { 0x2BC5, 0x0401 },
     { 0x2BC5, 0x0402 },
     { 0x2BC5, 0x0403 },
