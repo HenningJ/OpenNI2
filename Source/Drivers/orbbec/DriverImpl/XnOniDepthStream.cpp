@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 #include "XnOniDepthStream.h"
 #include "../Sensor/XnSensorDepthStream.h"
+#include "OpenCvColorStream.h"
 
 //---------------------------------------------------------------------------
 // XnOniDepthStream class
@@ -54,7 +55,11 @@ OniStatus XnOniDepthStream::getProperty(int propertyId, void* data, int* pDataSi
 			return ONI_STATUS_BAD_PARAMETER;
 		}
 
-		*(int*)data = 0;
+    // for the Astra Pro, min distance is supposed to be 400mm
+    if (m_pDevice->GetInfo()->usbProductId == 0x0403)
+      *(int*)data = 400;
+    else
+		  *(int*)data = 0;
 		return ONI_STATUS_OK;
 	case XN_STREAM_PROPERTY_DEPTH_SENSOR_CALIBRATION_INFO:
 		return ((XnSensorDepthStream*)m_pDeviceStream)->GetSensorCalibrationInfo(data, pDataSize);
@@ -151,15 +156,31 @@ void XnOniDepthStream::notifyAllProperties()
 OniStatus XnOniDepthStream::convertDepthToColorCoordinates(StreamBase* colorStream, int depthX, int depthY, OniDepthPixel depthZ, int* pColorX, int* pColorY)
 {
 	// take video mode from the color stream
-	XnOniMapStream* pColorStream = (XnOniMapStream*)colorStream;
-
 	OniVideoMode videoMode;
-	XnStatus retVal = pColorStream->GetVideoMode(&videoMode);
-	if (retVal != XN_STATUS_OK)
-	{
-		XN_ASSERT(FALSE);
-		return ONI_STATUS_ERROR;
-	}
+	XnOniMapStream* pColorStream = dynamic_cast<XnOniMapStream*>(colorStream);
+  if (pColorStream != NULL)
+  {
+  	XnStatus retVal = pColorStream->GetVideoMode(&videoMode);
+	  if (retVal != XN_STATUS_OK)
+	  {
+		  XN_ASSERT(FALSE);
+		  return ONI_STATUS_ERROR;
+	  }
+  }
+  else
+  {
+    OpenCvColorStream* pCvColorStream = dynamic_cast<OpenCvColorStream*>(colorStream);
+    if (pCvColorStream == NULL)
+      return ONI_STATUS_ERROR;
+
+  	XnStatus retVal = pCvColorStream->GetVideoMode(&videoMode);
+	  if (retVal != XN_STATUS_OK)
+	  {
+		  XN_ASSERT(FALSE);
+		  return ONI_STATUS_ERROR;
+	  }
+  }
+
 
 	// translate it to the internal property
 	XnPixelRegistration pixelArgs;

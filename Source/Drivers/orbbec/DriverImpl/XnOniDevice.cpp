@@ -24,6 +24,7 @@
 #include "XnOniDevice.h"
 #include "XnOniStream.h"
 #include "XnOniDriver.h"
+#include "OpenCvColorstream.h"
 #include "../Sensor/XnDeviceEnumeration.h"
 #include "../DDK/XnPropertySetInternal.h"
 
@@ -265,7 +266,17 @@ oni::driver::StreamBase* XnOniDevice::createStream(OniSensorType sensorType)
 	}
 	else if (sensorType == ONI_SENSOR_COLOR)
 	{
-		pStream = XN_NEW(XnOniColorStream, &m_sensor, this);
+		if ( m_info.usbProductId == 0x0401
+		  || m_info.usbProductId == 0x0402)
+		{
+			// use OpenNi stream for Astra & Astra-S
+			pStream = XN_NEW(XnOniColorStream, &m_sensor, this);
+		}
+		else
+		{
+			// use OpenCV stream for Astra-Pro & Astra-Pro-S
+			return XN_NEW(OpenCvColorStream, &m_sensor, this);
+		}
 	}
 	else if (sensorType == ONI_SENSOR_IR)
 	{

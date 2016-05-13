@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -52,6 +52,7 @@
     <ClCompile Include="DDK\XnShiftToDepthStreamHelper.cpp" />
     <ClCompile Include="DDK\XnStreamingStream.cpp" />
     <ClCompile Include="DDK\XnStringProperty.cpp" />
+    <ClCompile Include="DriverImpl\OpenCvColorStream.cpp" />
     <ClCompile Include="DriverImpl\XnExportedOniDriver.cpp" />
     <ClCompile Include="DriverImpl\XnOniColorStream.cpp" />
     <ClCompile Include="DriverImpl\XnOniDepthStream.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="DDK\XnShiftToDepthStreamHelper.h" />
     <ClInclude Include="DDK\XnStreamingStream.h" />
     <ClInclude Include="DDK\XnStringProperty.h" />
+    <ClInclude Include="DriverImpl\OpenCvColorStream.h" />
     <ClInclude Include="DriverImpl\XnOniColorStream.h" />
     <ClInclude Include="DriverImpl\XnOniDepthStream.h" />
     <ClInclude Include="DriverImpl\XnOniDevice.h" />
@@ -209,7 +211,7 @@
     <ResourceCompile Include="..\..\Resources\OpenNI.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9F6652AF-35F2-452E-A2D3-08D05F5C075E}</ProjectGuid>
+    <ProjectGuid>{FC7820B5-8A55-40D8-B1C9-2892726ABA7D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PS1080</RootNamespace>
     <ProjectName>ORBBEC</ProjectName>
@@ -280,7 +282,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PS1080_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\Include;.\;..\..\..\Include;..\..\..\ThirdParty\PSCommon\XnLib\Include;..\..\DepthUtils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Include;.\;..\..\..\Include;..\..\..\ThirdParty\PSCommon\XnLib\Include;..\..\DepthUtils;D:\Development\ExternalLibs\install\opencv\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -290,9 +292,11 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>XnLib.lib;DepthUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Bin\$(Platform)-$(Configuration)\</AdditionalLibraryDirectories>
-      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalDependencies>XnLib.lib;DepthUtils.lib;Strmiids.lib;opencv_core2411d.lib;opencv_highgui2411d.lib;opencv_calib3d2411d.lib;opencv_imgproc2411d.lib;D:\Development\ExternalLibs\install\tbb\lib\x64\vc10\tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Bin\$(Platform)-$(Configuration)\;D:\opencv\build\x86\vc10\lib</AdditionalLibraryDirectories>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>..\..\..\Include</AdditionalIncludeDirectories>
@@ -305,7 +309,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PS1080_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\Include;.\;..\..\..\Include;..\..\..\ThirdParty\PSCommon\XnLib\Include;..\..\..\ThirdParty\LibJPEG;..\..\DepthUtils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Include;.\;..\..\..\Include;..\..\..\ThirdParty\PSCommon\XnLib\Include;..\..\..\ThirdParty\LibJPEG;..\..\DepthUtils;D:\Development\ExternalLibs\install\opencv\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -315,7 +319,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>XnLib.lib;DepthUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>XnLib.lib;DepthUtils.lib;D:\opencv\build\x86\vc10\staticlib\opencv_core2412.lib;D:\opencv\build\x86\vc10\staticlib\opencv_highgui2412.lib;D:\opencv\build\x86\vc10\staticlib\opencv_calib3d2412.lib;D:\opencv\build\x86\vc10\staticlib\opencv_imgproc2412.lib;D:\Development\ExternalLibs\install\tbb\lib\x64\vc10\tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Bin\$(Platform)-$(Configuration)\</AdditionalLibraryDirectories>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
@@ -331,7 +335,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PS1080_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\Include;.\;..\..\..\Include;..\..\..\ThirdParty\PSCommon\XnLib\Include;..\..\DepthUtils;..\..\..\ThirdParty\PSCommon\XnLib\ThirdParty\LibJPEG</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Include;.\;..\..\..\Include;..\..\..\ThirdParty\PSCommon\XnLib\Include;..\..\DepthUtils;..\..\..\ThirdParty\PSCommon\XnLib\ThirdParty\LibJPEG;D:\opencv\build\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -347,7 +351,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>XnLib.lib;DepthUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>XnLib.lib;DepthUtils.lib;Strmiids.lib;D:\opencv\build\x86\vc10\lib\opencv_core2411.lib;D:\opencv\build\x86\vc10\lib\opencv_highgui2411.lib;D:\opencv\build\x86\vc10\lib\opencv_calib3d2411.lib;D:\opencv\build\x86\vc10\lib\opencv_imgproc2411.lib;D:\Development\ExternalLibs\install\tbb\lib\x64\vc10\tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Bin\$(Platform)-$(Configuration)\</AdditionalLibraryDirectories>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
@@ -363,7 +367,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PS1080_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\Include;.\;..\..\..\Include;..\..\..\ThirdParty\PSCommon\XnLib\Include;..\..\..\ThirdParty\LibJPEG;..\..\DepthUtils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Include;.\;..\..\..\Include;..\..\..\ThirdParty\PSCommon\XnLib\Include;..\..\..\ThirdParty\LibJPEG;..\..\DepthUtils;D:\Development\ExternalLibs\install\opencv\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
